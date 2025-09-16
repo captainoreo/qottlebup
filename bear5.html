@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wait for it...</title>
+    <!-- Use Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Use a self-contained style block for custom CSS, if needed.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom CSS for the jumpscare effect */
+        .jumpscare {
+            max-width: 80%;
+            max-height: 80vh;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+
+        /* Define the keyframe animation for a more intense shake and rotation */
+        @keyframes jumpscare-effect {
+            0% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+            }
+            10% {
+                transform: translate(-30px, -30px) rotate(-15deg) scale(1.5);
+            }
+            20% {
+                transform: translate(30px, 30px) rotate(15deg) scale(1.7);
+            }
+            30% {
+                transform: translate(-30px, -30px) rotate(-15deg) scale(1.8);
+            }
+            40% {
+                transform: translate(30px, 30px) rotate(15deg) scale(1.9);
+            }
+            50% {
+                transform: translate(-30px, -30px) rotate(-15deg) scale(2.0);
+            }
+            60% {
+                transform: translate(30px, 30px) rotate(15deg) scale(1.9);
+            }
+            70% {
+                transform: translate(-30px, -30px) rotate(-15deg) scale(1.8);
+            }
+            80% {
+                transform: translate(30px, 30px) rotate(15deg) scale(1.7);
+            }
+            90% {
+                transform: translate(-30px, -30px) rotate(-15deg) scale(1.5);
+            }
+            100% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+            }
+        }
+        
+        /* Define the keyframe animation for the flashing effect */
+        @keyframes flash-red {
+            0%, 100% { background-color: black; }
+            50% { background-color: #7f0000; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Apply the animation when the 'active' class is added */
+        .jumpscare.active {
+            opacity: 1;
+            visibility: visible;
+            animation: jumpscare-effect 0.5s forwards;
+        }
+        
+        .flashing {
+            animation: flash-red 0.5s ease-in-out forwards;
+        }
+
+    </style>
+</head>
+<body id="body" class="bg-black text-white font-inter flex flex-col items-center justify-center h-screen">
+
+    <!-- Countdown Timer Section -->
+    <div id="countdown-container" class="transition-opacity duration-1000 ease-in-out">
+        <h1 id="main-text" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+            Get Ready...
+        </h1>
+        <div id="timer" class="text-7xl sm:text-8xl md:text-9xl font-bold text-red-500 animate-pulse">
+            10
+        </div>
+        <p class="text-md sm:text-lg mt-4">
+            The timer is counting down...
+        </p>
+    </div>
+
+    <!-- Jumpscare Section (initially hidden) -->
+    <div id="jumpscare-container" class="hidden flex items-center justify-center h-full w-full">
+        <img id="jumpscare-image" 
+             src="https://qottlebup.nekoweb.org/BEAR5.png" 
+             onerror="this.src='https://placehold.co/1200x800/000000/FF0000?text=ERROR'"
+             alt="Jumpscare image" 
+             class="jumpscare">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timerElement = document.getElementById('timer');
+            const countdownContainer = document.getElementById('countdown-container');
+            const jumpscareContainer = document.getElementById('jumpscare-container');
+            const jumpscareImage = document.getElementById('jumpscare-image');
+            const body = document.getElementById('body');
+            const mainText = document.getElementById('main-text');
+
+            let timeLeft = 10;
+
+            // Function to play the jumpscare sound and loop it
+            const playJumpscareSound = () => {
+                const jumpscareSound = new Audio('https://qottlebup.nekoweb.org/bear5%20jumpscare.mp3');
+                jumpscareSound.play().then(() => {
+                    setTimeout(() => {
+                        jumpscareSound.play();
+                    }, 500); // Replay sound after a brief pause for a looping effect
+                }).catch(e => {
+                    console.error('Failed to play sound:', e);
+                });
+            };
+
+            // Update the timer every second
+            const countdown = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+
+                // Add an unexpected event at the 3-second mark
+                if (timeLeft === 3) {
+                    mainText.textContent = "Processing...";
+                    timerElement.classList.remove('animate-pulse');
+                    timerElement.classList.add('animate-[pulse_1s_infinite]');
+                }
+
+                // Stop the timer when it reaches zero
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    // Hide the countdown and show the jumpscare
+                    countdownContainer.classList.add('hidden');
+                    jumpscareContainer.classList.remove('hidden');
+
+                    // Activate the jumpscare, flashing, and play the sound
+                    setTimeout(() => {
+                        jumpscareImage.classList.add('active');
+                        body.classList.add('flashing');
+                        playJumpscareSound();
+                    }, 500); // Wait 0.5s for the CSS transition
+
+                    // Redirect to the new page after the jumpscare
+                    setTimeout(() => {
+                        window.location.href = "https://qottlebup.nekoweb.org/";
+                    }, 2000); 
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
