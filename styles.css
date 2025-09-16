@@ -1,0 +1,31 @@
+body {
+  margin: 0;
+  background: linear-gradient(to bottom, #87ceeb, #4a90e2);
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+#gameCanvas {
+  background-color: #87ceeb;
+  border: 3px solid #333;
+  display: block;
+  margin-top: 20px;
+  outline: none;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+#ui {
+  margin-top: 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  gap: 30px;
+  text-shadow: 1px 1px 4px #000;
+  user-select: none;
+}
